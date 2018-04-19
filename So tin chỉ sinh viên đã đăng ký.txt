@@ -1,0 +1,48 @@
+ USSH
+
+exec sp_psc_StudentStudyUnitCountList @GraduateLevelID=N'DH',@StudyTypeID=N'CQ',@YearStudy=N'2018-2019',@TermID=N'HK01'
+
+
+
+
+CREATE proc dbo.sp_psc_StudentStudyUnitCountList  
+ @GraduateLevelID varchar(20) = '#', @StudyTypeID varchar(20) = '#', @YearStudy varchar(20) = '#', @TermID varchar(20) = '#'  
+,@Staff varchar(20)=''  
+as  
+begin  
+
+select distinct StudentiD , LastName , FirstName, BirthDay, StudyProgramID, ClassStudentID  
+ , sum(Credits ) as Credits,sum(MandatoryCredits) as MandatoryCredits , sum(SelectiveCredits) as  SelectiveCredits  
+ , sum(NumOfPeriods) as NumOfPeriods   
+ from vw_psc_StudentRegistStatic b  
+ where (@StudyTypeID = '#' or b.StudyTypeID = @StudyTypeID)   
+ and b.YearStudy = @YearStudy and b.TermID = @TermID   
+ group by StudentiD , LastName , FirstName, BirthDay, StudyProgramID, ClassStudentID  
+end  
+
+
+
+
+CREATE view vw_psc_StudentRegistStatic  
+as  
+select a.StudentID, b.LastName + ' ' + b.MiddleName as LastName, b.FirstName, b.BirthDay, c.StudyProgramID, f.ClassStudentID  
+, sum (h.Credits) as Credits  
+, sum(convert(decimal(5, 0), case when e.Curriculumtype = 1 then isnull(h.Credits, 0) else 0  end )) as MandatoryCredits  
+, sum(convert(decimal(5, 0), case when e.Curriculumtype = 2 then isnull(h.Credits, 0) else 0  end )) as SelectiveCredits  
+, g.YearStudy , g.TermiD , h.GraduateLevelID , g.StudyTypeID  
+, sum(isnull(hh.Value,0)) as NumOfPeriods  
+from psc_StudentScheduleStudyUnits a  
+inner join psc_Students b on a.StudentID = b.StudentID --and b.StudyStatusID in ( '1','9')  
+inner join psc1_StudentStudyPrograms c on b.StudentID = c.StudentiD   
+inner join psc_ScheduleStudyUnits d on a.ScheduleStudyUnitiD = d.ScheduleStudyUnitiD  
+inner join psc_StudyUnits g on d.StudyUnitID = g.StudyUnitID   
+inner join psc_Curriculums h on g.CurriculumID = h.CurriculumID  
+left join psc_CurriculumTeachingDetails hh on hh.CurriculumID = h.CurriculumID  
+inner join psc_StudentClassStudent f on b.StudentID = f.StudentiD   
+left join psc1_CurriculumStudyPrograms e on c.StudyProgramID = e.StudyProgramID and g.CurriculumID = e.CurriculumID   
+group by  a.StudentID, b.LastName, b.MiddleName , b.FirstName, b.BirthDay, c.StudyProgramID, f.ClassStudentID   
+,e.Curriculumtype , g.YearStudy , g.TermiD , h.GraduateLevelID , g.StudyTypeID  
+  
+  
+  
+  

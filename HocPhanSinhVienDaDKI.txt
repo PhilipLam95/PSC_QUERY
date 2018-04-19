@@ -1,0 +1,20 @@
+select a.StudentID
+		,a.ScheduleStudyUnitID
+		,a.RegistDate
+		,b.StudyUnitID
+		,b.MaxStudentNumber
+		,b.MinStudentNumber
+		,b.StudyUnitTypeID
+		,c.CurriculumID
+		,c.TermID
+		,c.YearStudy
+		,d.Mark10
+		,d.Mark4
+		,d.IsPass
+		,a.RegistStatus
+		,a.RegistType from psc_StudentScheduleStudyUnits A 
+inner join psc_ScheduleStudyUnits b on a.ScheduleStudyUnitID = b.ScheduleStudyUnitID
+inner join psc_StudyUnits c on c.StudyUnitID = b.StudyUnitID
+inner join psc_StudentStudyUnits d on d.StudyUnitID = c.StudyUnitID and d.StudentID = a.StudentID
+where (a.ScheduleStudyUnitID = '1714NVA06201' or a.ScheduleStudyUnitID = '1715NVA06201')
+and a.StudentID = '1367010209'

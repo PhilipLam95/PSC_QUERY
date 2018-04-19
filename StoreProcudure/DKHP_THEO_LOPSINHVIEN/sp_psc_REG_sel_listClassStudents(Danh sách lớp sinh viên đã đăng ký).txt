@@ -1,0 +1,23 @@
+CREATE PROC sp_psc_REG_sel_listClassStudents  
+@Staff varchar(20)  
+AS  
+BEGIN  
+ SELECT a.ClassStudentID,
+		 a.ClassStudentName,
+		 b.DepartmentName,
+		 c.CourseName,
+		 d.NumStudents  
+ FROM psc_ClassStudents a  
+ LEFT JOIN psc_Departments b ON a.DepartmentID = b.DepartmentID  
+ LEFT JOIN psc_Courses  c ON a.CourseID = c.CourseID  
+ LEFT JOIN  
+  (  
+   SELECT d.ClassStudentID,COUNT(*) AS NumStudents  
+   FROM psc_StudentClassStudent d  
+   INNER JOIN dbo.psc_Students e ON d.StudentID = e.StudentID  
+   WHERE e.StudyStatusID = 1 OR e.StudyStatusID = 2  
+   GROUP BY d.ClassStudentID  
+  ) d ON a.ClassStudentID = d.ClassStudentID  
+ where dbo.fn_psc_REG_CheckStaffRole(@Staff,c.GraduateLevelID,c.StudyTypeID,'','')=1 --Phan quyen bac/he/khoa/co so  
+ ORDER BY c.CourseName DESC,ClassStudentID desc  
+END

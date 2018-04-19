@@ -1,0 +1,139 @@
+INSERT INTO [psc_Curriculums_Log]  
+           ([CurriculumID]  
+           ,[CurriculumName]  
+           ,[Abbreviation]  
+           ,[Credits]  
+           ,[GraduateLevelName]  
+           ,[CurriculumGroupName]  
+           ,[DepartmentName]  
+           ,[TheoryCredits]  
+           ,[PracticeCredits]  
+           ,[SelfCredits]  
+           ,[StudyUnitAssignmentConfigTypeID]  
+           ,[ForeignName]  
+           ,[GraduateLevels]  
+           ,[SpecializationName]  
+           ,[StudyTypeName]  
+           ,[Note]  
+           ,[Theory]  
+           ,[Practice]  
+           ,[Trainee]  
+           ,[Essay]  
+           ,[Project]  
+           ,[Thesis]  
+           ,[TheoryNumberOfPeriods]  
+           ,[PracticeNumberOfPeriods]  
+           ,[RoomTypeID]  
+           ,[OperatorID]  
+           ,[UpdateStaff]  
+           ,[UpdateDate])  
+     select [CurriculumID]  
+           ,[CurriculumName]  
+           ,[Abbreviation]  
+           ,[Credits]  
+           ,[GraduateLevelName]  
+           ,[CurriculumGroupName]  
+           ,[DepartmentName]  
+           ,[TheoryCredits]  
+           ,[PracticeCredits]  
+           ,[SelfCredits]  
+           ,[StudyUnitAssignmentConfigTypeID]  
+           ,[ForeignName]  
+           ,[GraduateLevels]  
+           ,[SpecializationName]  
+           ,[StudyTypeName]  
+           ,[Note]  
+           ,[Theory]  
+           ,[Practice]  
+           ,[Trainee]  
+           ,[Essay]  
+           ,[Project]  
+           ,[Thesis]  
+           ,[TheoryNumberOfPeriods]  
+           ,[PracticeNumberOfPeriods]  
+           ,[RoomTypeID]  
+           ,'U_D'  
+           ,@UpdateStaff as [UpdateStaff]  
+           ,getdate() as [UpdateDate]  
+  from vw_psc_Curriculums where [CurriculumID] = @CurriculumID  
+  select @ReVal = @@error  
+  if @ReVal <> 0 begin rollback tran return end  
+    
+  update psc_Curriculums  
+   set GraduateLevelID = @GraduateLevelID  
+   , UpdateStaff = @UpdateStaff  
+   , UpdateDate = getdate()  
+   where CurriculumID = @CurriculumID  
+  select @ReVal = @@error  
+  if @ReVal <> 0 begin rollback tran return END   
+    
+  update psc_Edu_Curriculums  
+   set GraduateLevelID = @GraduateLevelID  
+   , UpdateStaff = @UpdateStaff  
+   , UpdateDate = getdate()  
+   where CurriculumID = @CurriculumID  
+  select @ReVal = @@error  
+  if @ReVal <> 0 begin rollback tran return END  
+    
+  INSERT INTO [psc_Curriculums_Log]  
+           ([CurriculumID]  
+           ,[CurriculumName]  
+           ,[Abbreviation]  
+           ,[Credits]  
+           ,[GraduateLevelName]  
+           ,[CurriculumGroupName]  
+           ,[DepartmentName]  
+           ,[TheoryCredits]  
+           ,[PracticeCredits]  
+           ,[SelfCredits]  
+           ,[StudyUnitAssignmentConfigTypeID]  
+           ,[ForeignName]  
+           ,[GraduateLevels]  
+           ,[SpecializationName]  
+           ,[StudyTypeName]  
+           ,[Note]  
+           ,[Theory]  
+           ,[Practice]  
+           ,[Trainee]  
+           ,[Essay]  
+           ,[Project]  
+           ,[Thesis]  
+           ,[TheoryNumberOfPeriods]  
+           ,[PracticeNumberOfPeriods]  
+           ,[RoomTypeID]  
+           ,[OperatorID]  
+           ,[UpdateStaff]  
+           ,[UpdateDate])  
+     select [CurriculumID]  
+           ,[CurriculumName]  
+           ,[Abbreviation]  
+           ,[Credits]  
+           ,[GraduateLevelName]  
+           ,[CurriculumGroupName]  
+           ,[DepartmentName]  
+           ,[TheoryCredits]  
+           ,[PracticeCredits]  
+           ,[SelfCredits]  
+           ,[StudyUnitAssignmentConfigTypeID]  
+           ,[ForeignName]  
+           ,[GraduateLevels]  
+           ,[SpecializationName]  
+           ,[StudyTypeName]  
+           ,[Note]  
+           ,[Theory]  
+           ,[Practice]  
+           ,[Trainee]  
+           ,[Essay]  
+           ,[Project]  
+           ,[Thesis]  
+           ,[TheoryNumberOfPeriods]  
+           ,[PracticeNumberOfPeriods]  
+           ,[RoomTypeID]  
+           ,'U_I'  
+           ,@UpdateStaff as [UpdateStaff]  
+           ,getdate() as [UpdateDate]  
+  from vw_psc_Curriculums where [CurriculumID] = @CurriculumID  
+  select @ReVal = @@error  
+  if @ReVal <> 0 begin rollback tran return end  
+ commit tran  
+ return  

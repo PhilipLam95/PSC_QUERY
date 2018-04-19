@@ -1,0 +1,29 @@
+CREATE proc dbo.sp_psc_StudyUnits_Sel_By_DepartmentID  
+ @GraduateLevelID varchar(20)  
+ , @StudyTypeID varchar(20)  
+ , @YearStudy varchar(20)  
+ , @TermID varchar(20)  
+ , @CurriculumGroupID varchar(20)  
+ , @Staff varchar(50) = ''  
+as  
+begin  
+ select distinct StudyUnitID, StudyUnitAlias, YearStudy, TermID, TermName, a.CurriculumID, CurriculumName, a.Abbreviation, convert(int, Credits) as Credits, TheoryCredits  
+  , PracticeCredits, SelfCredits, CreditInfos, FeeRate, MinStudentNumber, MaxStudentNumber, StudentQuotas, Status, StatusName, Closed  
+  , a.GraduateLevelID + ' - ' + a.StudyTypeID as GraduateLevelStudyUnitTypeID  
+  , a.GraduateLevelID, a.GraduateLevelName, a.StudyTypeID, a.StudyTypeName, CurriculumGroupID, CurriculumGroupName, DepartmentID, DepartmentName, a.ScoreGroupName  
+  , a.GraduateLevelID + ' - ' + a.StudyTypeID as GraduateLevelStudyUnitTypeID , StudyUnitAssignmentConfigTypeID, StudyUnitAssignmentConfigTypeName, ScoreGroupID, UpdateStaff, UpdateStaffName, UpdateDate  
+  , isnull(TotalLiteratures,0) as TotalLiteratures , '' as COurseID , '' as OlogyID , '' as OlogyName   
+ from vw_psc_StudyUnitInfos a inner join psc_GraduateLevels b on b.GraduateLevelID = a.GraduateLevelID  
+  left join (select distinct CurriculumID , sum (1) as TotalLiteratures from psc_CurriculumLiteratures group by CurriculumID ) c  
+ on a.CurriculumID = c.CurriculumID  
+ where (@GraduateLevelID = '#' or a.GraduateLevelID = @GraduateLevelID)  
+  and (@StudyTypeID = '#' or a.StudyTypeID = @StudyTypeID)  
+  and (@YearStudy = '#' or a.YearStudy = @YearStudy)  
+  and (@TermID = '#' or a.TermID = @TermID)  
+  and (@CurriculumGroupID = '#' or a.CurriculumGroupID = @CurriculumGroupID)    
+end  
+  
+
+
+EXAMPLE :
+exec sp_psc_StudyUnits_Sel_By_DepartmentID @GraduateLevelID=N'DH',@StudyTypeID=N'CQ',@YearStudy=N'2017-2018',@TermID=N'HK01',@CurriculumGroupID=N'#'

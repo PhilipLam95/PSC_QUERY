@@ -1,0 +1,31 @@
+SELECT DISTINCT
+        b.CurriculumID ,
+        d.CurriculumIDs ,
+        REVERSE(STUFF(REVERSE(( SELECT  a.StudyProgramID + ',' AS [text()]
+                                FROM    psc1_CurriculumStudyPrograms a
+                                WHERE   a.CurriculumID = b.CurriculumID
+                                ORDER BY a.CurriculumID
+                                FOR
+                                XML PATH('')
+                              )), 1, 1, '')) 'StudyPrograms' INTO #tmp
+FROM    dbo.psc1_CurriculumStudyPrograms b
+        INNER JOIN vw_psc1_EquivalentCurriculums d ON ( b.CurriculumID = d.CurriculumID
+                                                        OR b.CurriculumID = d.CurriculumIDs
+                                                      )
+WHERE   b.CurriculumID <> d.CurriculumIDs
+ORDER BY b.CurriculumID
+
+GO
+
+SELECT  a.CurriculumID ,
+        b.CurriculumName ,
+        a.CurriculumIDs ,
+        c.CurriculumName as EquipvalentsCurriculum,
+        a.StudyPrograms
+FROM    #tmp a
+INNER JOIN dbo.psc_Curriculums b ON b.CurriculumID = a.CurriculumID
+INNER JOIN dbo.psc_Curriculums c ON a.CurriculumIDs = c.CurriculumID
+ORDER BY a.CurriculumID desc
+
+drop table #tmp
+
