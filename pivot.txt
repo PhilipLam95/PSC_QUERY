@@ -1,0 +1,23 @@
+select StudentID,
+ (ISNULL([NH],0)) AS STC_KYNANG,
+ (ISNULL([KH],0)) AS STC_KEHOACH,
+ (ISNULL([HL],0)) as STC_HOCLAI,
+ (ISNULL([CT],0)) as STC_CAITHIEN,
+ (ISNULL([HV],0)) as STC_HOCVUOT,
+ (ISNULL([NKH],0)) as STC_NGOAIKEHOACH,
+ (ISNULL([NCT],0)) as STC_NGOACICTDT,
+ (ISNULL([NH],0)
+  + ISNULL([KH],0)
+  + ISNULL([HL],0)
+  + ISNULL([CT],0)
+  + ISNULL([HV],0)
+  + ISNULL([NKH],0)
+  + ISNULL([NCT],0)) AS TONGSCT_DADK
+  from 
+(select c.StudentID,c.RegistType,d.Credits from psc_StudentScheduleStudyUnits c 
+inner join psc_ScheduleStudyUnits b on c.ScheduleStudyUnitID = b.ScheduleStudyUnitID
+inner join psc_StudyUnits a on a.StudyUnitID = b.StudyUnitID
+inner join psc_Curriculums d on d.CurriculumID = a.CurriculumID
+WHERE a.YearStudy ='2017-2018' and a.TermID ='HK01') as SUB
+PIVOT(sum(Credits) for RegistType IN ([NH],[KH],[HL],[CT],[HV],[NKH],[NCT])) AS PIVOTtABLE
+where  StudentID = '151A010132';
