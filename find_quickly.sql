@@ -163,5 +163,17 @@ ROUTINE_DEFINITION LIKE '%YourStoredProcedure%'
 
 
 
+Query to find Stored Procedure LIKE .
+--------------------------------------------------------------------------------------------
+select distinct 'sp_helptext ' + name + CHAR(13)+CHAR(10)+'go' as Name  
+  FROM syscomments c 
+  JOIN sysobjects o 
+    ON c.id = o.id
+  JOIN INFORMATION_SCHEMA.Tables t
+    ON  c.text LIKE '%psc_Sch_BusyProfessorByTerms%'
+order by Name ASC
+
+
+
 
 
